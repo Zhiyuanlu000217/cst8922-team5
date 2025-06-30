@@ -8,59 +8,46 @@ const PORT = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 // Configure Express to serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+// --- NEW FEATURE: /api/stress endpoint for high concurrency simulation ---
 
-// --- NEW FEATURE: /api/stress endpoint with O(n^2) inefficiency ---
-
-/**
- * Deliberately inefficient O(n^2) function to simulate a performance bottleneck.
- * It simulates processing a list and finding duplicate pairs using nested loops.
- * An optimized solution would typically use a Set or Map (O(n)).
- */
-function processInefficiently(n) {
-  // Create a large array for processing
-  const largeArray = Array.from({ length: n }, (_, i) => i % (n / 10 || 1)); // Creates some duplicates
-
-  let pairCount = 0;
-  // This nested loop makes the complexity O(n^2)
-  for (let i = 0; i < largeArray.length; i++) {
-    for (let j = 0; j < largeArray.length; j++) {
-      if (i !== j && largeArray[i] === largeArray[j]) {
-        pairCount++; // Dummy operation to simulate work
-      }
-    }
+// Inefficient recursive Fibonacci function (deliberately not optimized)
+function fibonacci(n) {
+  if (n <= 1) {
+    return n;
   }
-  return pairCount;
+  return fibonacci(n - 1) + fibonacci(n - 2);
 }
 
 // Endpoint to simulate high CPU usage due to inefficient algorithm
 app.get('/api/stress', (req, res) => {
-  const { n } = req.query; // Get 'n' from query parameter, e.g., /api/stress?n=10000
+  const { n } = req.query; // Get 'n' from query parameter, e.g., /api/stress?n=40
 
-  if (!n || isNaN(n) || n <= 0) {
-    return res.status(400).json({ error: 'Please provide a positive number "n" for array size (e.g., /api/stress?n=10000).' });
+  if (!n || isNaN(n) || n < 0) {
+    return res.status(400).json({ error: 'Please provide a positive number "n" for Fibonacci calculation (e.g., /api/stress?n=40).' });
   }
 
-  const arraySize = parseInt(n, 10);
-  console.log(`STRESS TEST: Processing array of size ${arraySize} using O(n^2) algorithm.`);
+  const num = parseInt(n, 10);
+  console.log(`STRESS TEST: Calculating Fibonacci(${num}). This might take a while...`);
   const startTime = process.hrtime.bigint(); // High-resolution time start
 
-  const result = processInefficiently(arraySize); // This is the CPU-intensive part
+  const result = fibonacci(num); // This is the CPU-intensive part
 
   const endTime = process.hrtime.bigint(); // High-resolution time end
   const durationNs = endTime - startTime;
   const durationMs = Number(durationNs) / 1_000_000;
 
-  console.log(`STRESS TEST: O(n^2) processing completed. Took ${durationMs.toFixed(2)}ms.`);
+  console.log(`STRESS TEST: Fibonacci(${num}) calculated. Took ${durationMs.toFixed(2)}ms.`);
 
   res.json({
     status: 'success',
-    message: `Processed array of size ${arraySize} (O(n^2) simulation).`,
+    message: `Fibonacci(${num}) calculated.`,
     result: result,
     calculation_time_ms: durationMs.toFixed(2),
-    note: 'This endpoint simulates high CPU load due to an inefficient O(n^2) algorithm. An O(n) optimization is possible.',
+    note: 'This endpoint simulates high CPU load due to an inefficient algorithm. Consider optimizing the fibonacci function.',
   });
 });
 
@@ -71,5 +58,5 @@ app.get('/api/stress', (req, res) => {
 app.listen(PORT, () => {
   console.log(`DevOps Demo App is running on http://localhost:${PORT}`);
   console.log(`Serving static files from: ${path.join(__dirname, 'public')}`);
-  console.log(`Stress Test endpoint available at: http://localhost:${PORT}/api/stress?n=10000`);
+  console.log(`Stress Test endpoint available at: http://localhost:${PORT}/api/stress?n=40`);
 });
