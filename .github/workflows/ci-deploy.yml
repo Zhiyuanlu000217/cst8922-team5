@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - test_branch
+      - step4_missing_probe
 
 env:
   DOCKER_IMAGE_REPO: ${{ secrets.DOCKER_USERNAME }}/cst8922-demo-part4

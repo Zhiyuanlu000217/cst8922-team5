@@ -5,7 +5,7 @@ metadata:
   labels:
     app: probe-example
 spec:
-  replicas: 1 # Increased for high availability
+  replicas: 3 # Increased for high availability
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -20,29 +20,29 @@ spec:
           image: zeelu1/cst8922-demo-part4:latest
           ports:
             - containerPort: 3000
-          # livenessProbe:
-          #   httpGet:
-          #     path: /health
-          #     port: 3000
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 10
-          #   timeoutSeconds: 3
-          #   failureThreshold: 3
-          # readinessProbe:
-          #   httpGet:
-          #     path: /health
-          #     port: 3000
-          #   initialDelaySeconds: 5
-          #   periodSeconds: 5
-          #   timeoutSeconds: 2
-          #   failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 4
+            failureThreshold: 5
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
               memory: "512Mi"
               cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
 ---
 apiVersion: v1
 kind: Service
