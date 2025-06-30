@@ -5,10 +5,10 @@ const app = express();
 const PORT = 3000;
 
 // Health check endpoint for Kubernetes liveness/readiness probes
-app.get('/health', (req, res) => {
-  console.log('Health check endpoint hit. Server is responding.');
-  res.status(200).send('OK');
-});
+// app.get('/health', (req, res) => {
+//   console.log('Health check endpoint hit. Server is responding.');
+//   res.status(200).send('OK');
+// });
 
 // Serve a simple text response at the root path '/'
 app.get('/', (req, res) => {
