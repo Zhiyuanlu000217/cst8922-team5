@@ -3,7 +3,7 @@ name: AI Code Review for Changed Code (Inline)
 on:
   push:
     branches:
-      - step2_anti-pattern-detect # Change this to target branch before demo
+      - step2_anti_pattern_detect # Change this to target branch before demo
 
 permissions:
   contents: read
