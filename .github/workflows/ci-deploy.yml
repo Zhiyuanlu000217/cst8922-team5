@@ -3,10 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - step4 # Change to target branch before demo
+      - test_branch
 
 env:
-  DOCKER_IMAGE_REPO: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}
+  DOCKER_IMAGE_REPO: ${{ secrets.DOCKER_USERNAME }}/cst8922-demo-part4
 
 jobs:
   build-and-push-image:
