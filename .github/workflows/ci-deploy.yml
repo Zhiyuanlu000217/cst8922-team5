@@ -51,8 +51,8 @@ jobs:
     needs: build-and-push-image
     runs-on: ubuntu-latest
     env:
-      DOCKER_IMAGE_REPO: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}
-      IMAGE_TAG: ${{ needs.build-and-push-image.outputs.IMAGE_TAG }}
+      DOCKER_IMAGE_REPO: ${{ secrets.DOCKER_USERNAME }}/cst8922-demo-part4
+      IMAGE_TAG: latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -65,10 +65,6 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
-
-      - name: Update image tag in deployment manifest
-        run: |
-          sed -i.bak '/image:/s|image:.*|image: '"$DOCKER_IMAGE_REPO:$IMAGE_TAG"'|' kubernetes/deployment.yaml
 
       - name: Apply Kubernetes manifests
         run: kubectl apply -f kubernetes/deployment.yaml
