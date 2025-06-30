@@ -8,27 +8,6 @@ const PORT = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- CODE FOR SERVER-WIDE INSTABILITY (Optional, keep if you want it) ---
-// This middleware will run for every request
-app.use((req, res, next) => {
-  if (Math.random() < 0.05) { // 5% chance to crash
-    console.error('SERVER-WIDE INSTABILITY: Simulating a process crash for all endpoints!');
-    process.exit(1);
-  }
-
-  if (Math.random() < 0.10) { // 10% chance to introduce a global delay
-    const blockingDurationMs = Math.random() * 3000 + 1000;
-    console.warn(`SERVER-WIDE INSTABILITY: Simulating a global block for ${blockingDurationMs.toFixed(0)}ms.`);
-    const start = Date.now();
-    while (Date.now() - start < blockingDurationMs) { }
-    console.warn('SERVER-WIDE INSTABILITY: Global block finished. Resuming request processing.');
-  }
-
-  next();
-});
-// --- END SERVER-WIDE INSTABILITY CODE ---
-
-
 // Configure Express to serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
